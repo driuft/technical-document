@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="main.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <nav id="navbar">
+          <header>BigFix Action Script</header>
+          <ul>
+            <li><a class="nav-link" href="#Home">Home</a></li>
+            <li><a class="nav-link" href="#Guide">Guide</a></li>
+            <li><a class="nav-link" href="#Creating_a_Custom_Action">Creating a Custom Action</a></li>
+            <li><a class="nav-link" href="#Using_Substitution_Variables">Using Substitution Variables</a></li>
+            <li><a class="nav-link" href="#The_Prefetch_Block_Structure">The Prefetch Block Structure</a></li>
+            <li><a class="nav-link" href="#Static_Download">Static Download</a></li>
+            <li><a class="nav-link" href="#Dynamic_Download">Dynamic Download</a></li>
+            <li><a class="nav-link" href="#Action_Status_Messages">Action Status Messages</a></li>
+          </ul>
+        </nav>
+
+        <main id="main-doc">
+          <section class="main-section" id="Home">
+            <header>Home</header>
+            <article>
+              <p>The scope of the Action Script language is to issue commands, named <b>actions</b>, from within Fixlets and tasks on relevant clients to fix the problem identified by the Applicability Relevance clause.</p>
+              <p>In a Fixlet or task message you can specify an action script including one or more actions. These actions will be run in sequence on relevant clients when the console operator clicks <b>Take action</b> in the Fixlet or in the task entry on the BigFix console. If an action fails running, the subsequent actions will not run and the processing will stop. For this reason, it is very important to use error prevention methods in action scripts.</p>
+              <p>One of the biggest strengths of the Action Script language is the ability to use relevance language expressions to implement variables within actions. This ability, named <i>substitution</i>, allows you to customize an action for each specific agent where the action runs, for example, by resolving the local installation path of a proprietary application.</p>
+              <p>The information about the Action Script Language is divided into the following areas:</p>
+              <p><a href="#Guide">Guide</a><br>
+                Where you find the generic concepts that apply to the action script language.</p>
+              <p><a href="https://developer.bigfix.com/action-script/reference/" target="_blank">Reference</a><br>
+                Which contains information about all the available statements.</p>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="Guide">
+            <header>Guide</header>
+            <article>
+              <p>Here you find the main concepts to understand how to use the Action Script Language. <br><br>Conceptually this guide can be divided into five main blocks:</p>
+              <p><a href="#Creating_a_Custom_Action">Creating a Custom Action</a></p>
+              <p>This explains how to create and trigger custom actions from the BigFix console.</p>
+              <p><a href="#Using_Substitution_Variables">Using Substitution Variables</a></p>
+              <p>This explains how to take advantage of the relevance language within the action script to create scripts that are finely targeted and highly flexible.</p>
+              <p><a href="#The_Prefetch_Block_Structure">The Prefetch Block Structure</a></p>
+              <p>This describes the structure that you must use to define the download required for running an action successfully.</p>
+              <p><a href="#Static_Download">Static</a> and <a href="#Dynamic_Download">Dynamic</a> Downloads</p>
+              <p>This explains the different methods for downloading to targets the data necessary to run the actions and successfully run the Fixlet or the task.</p>
+              <p><a href="#Action_Status_Messages">Action Status Messages</a></p>
+              <p>This lists the action statuses that each agent running the action might send back to the server while processing the action.</p>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="Creating_a_Custom_Action">
+            <header>Creating a Custom Action</header>
+            <article>
+              <p>You can create custom actions to fix specific problems or address issues across your network that are not covered by the standard content.</p>
+              <p>To create a custom action:</p>
+                <ol>
+                  <li>Log on to the BigFix Console as a Master Operator.</li><br>
+                  <li>Select <b>Tools > Take Custom action</b></li><br>
+                  <li>In the <b>Take action</b> dialog provide a <b>Name</b> for your custom action. The value in this field can be sorted and filtered, keep it in mind when defining your naming convention.</li><br>
+                  <li>
+                    The Preset pull-down menu allows you to choose a preset customized action.    These are the the operations that you can run against a preset action:
+                    <ul>
+                      <br>
+                      <li><b>Preset:</b> Select a preset from the pull-down menu.</li>
+                      <li><b>Show only personal presets:</b> Check this box to filter the list of presets to just your personal ones.</li>
+                      <li><b>Save Preset:</b> Save the current set of action options for later use. A check box below that lets you save it as a public or private preset.</li>
+                      <li><b>Delete Preset:</b> Removes this preset from the selectable list.</li>
+                    </ul>
+                  </li><br>
+                  <li>
+                    Clicking on the different tabs you can define and customize the preset action:
+                    <ul>
+                      <br>
+                      <li><b>Target:</b> Select the targets from the provided list, or use properties or a specific list of computers to target the action.</li>
+                      <li><b>Execution:</b> Specify the deployment options and constraints, including repeated application and failure recovery.</li>
+                      <li><b>Users:</b> Determine how this action will respond to the presence or absence of users.</li>
+                      <li><b>Messages:</b> Provide a message to precede and accompany the action.</li>
+                      <li><b>Offer:</b> Create an action offering, allowing the user to choose whether or not to apply the action.</li>
+                      <li><b>Post-action:</b> Describe what actions need to be done to complete the action, including restarts or shutdowns.</li>
+                      <li><b>Applicability:</b> Allows you to override the original action relevance.</li>
+                      <li><b>Success Criteria:</b> Create specific criteria that you can use to determine if your action was successful.</li>
+                      <li><b>Action Script:</b> This tab allows you to create or modify an action script.</li>
+                    </ul>
+                  </li><br>
+                  <li>When you finish customizing the custom action and you are ready to deploy it, click <b>OK</b>.</li>
+                </ol>
+              <p>Your custom action will be distributed to all the computers that have been selected or targeted. The actions will be applied using whatever constraints and schedules that you have specified.</p>
+              <p>You can also create actions when you Create Tasks or Create Fixlets.</p>
+              <p><b>Note:</b> The original action included in the Fixlet or in the task is not overwritten by your custom action.</p>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="Using_Substitution_Variables">
+            <header>Using Substitution Variables</header>
+            <article>
+              <p>Substitution allows the Fixlet author to include relevance expressions in an action. This is accomplished by placing the relevance expression in curly braces.</p>
+              <p>For example, this example runs a program without knowing where it is located. A relevance expression evaluates the path name automatically using the ‘regapp’ inspector:</p>
+              <code><span class="action">run</span> "{pathname <span class="relevance">of</span> regapp <span class="pathname">"excel.exe"</span>}"</code>
+              <p>In this example, instead, the action pauses until a program finishes running:</p>
+              <code><span class="action">pause while</span> {<span class="relevance">exists</span> running application <span class="pathname">"c:\updater.exe"</span></code>
+              <p>BigFix expects to find a single expression inside the curly braces. If it sees another left brace before it encounters a closing right brace, it treats it as an ordinary character. For example, the output of the action:</p>
+              <code>echo {"a left brace: {"}</code>
+              <p>would be:</p>
+              <code>a left brace: {</code>
+              <p>This means that no special escape characters are necessary to represent a left brace. To output a literal right brace without ending the substitution, use a double character, for example:</p>
+              <code>echo {"{a string inside braces}}"}</code>
+              <p>would return:</p>
+              <code>{a string inside braces}</code>
+              <p>This is another example:</p>
+              <code><span class="action">appendfile</span> {{ name of operating system } {name <span class="relevance">of</span> operating system}</code>
+              <p>When this example is parsed, the double left braces indicate that what follows is not a relevance expression. Only a single right brace is necessary when it's outside of a relevance expression (inside a relevance expression, a double right brace is necessary to specify a literal one). This would output the following line to __appendfile:</p>
+              <code>{ name of operating system } WinXP</code>
+              <p>You can also use substitution with add prefetch item commands in prefetch blocks, for example:</p>
+              <pre>
+                <code>
+          <span class="action">begin prefetch block</span>
+              <span class="action">parameter</span> "manifest"="{pathname <span class="relevance">of</span> file <span class="pathname">"manifest.spec"</span> <span class="relevance">of</span> client folder <span class="relevance">of</span> site <span class="pathname">"AV"</span>}"       
+              <span class="action">add prefetch item</span> {concatenation <span class="pathname">" ; "</span> <span class="relevance">of</span> lines <span class="relevance">of</span> file (parameter <span class="pathname">"manifest"</span>)}       
+          <span class="action">end prefetch block</span>
+                </code>
+              </pre>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="The_Prefetch_Block_Structure">
+            <header>The Prefetch Block Structure</header>
+            <article>
+              <p>The prefetch block must be the first entry in the action script. It contains all the download prefetch logic needed to prepare for subsequent action execution. The instructions contained in the prefetch block must successfully complete before the rest of the action can continue; in this way it is ensured that files are successfully downloaded before the action script runs.</p>
+              <p>The prefetch block structure must satisfy the following criteria:</p>
+                <ul>
+                  <li>Is located as first entry in the action script. Only blank lines and comments are allowed to precede it.</li>
+                  <li>Starts with a <b>begin prefetch block</b> statement.</li>
+                  <li>Ends with the <b>end prefetch block</b> statement.</li>
+                </ul>
+              <p><b>Note:</b> Only one prefetch block is allowed per action.</p>
+              <p>Some of the methods that can be used in a prefetch block include:</p>
+              <p><b>Literal downloads :</b> These are ordinary <a href="#Static_Download">static downloads</a>, which are still available.</p>
+              <p><b>Conditional downloads :</b> Only those commands inside TRUE condition pathways are performed.</p>
+              <p><b>Variable Substitution :</b> This includes downloads that use relevance substitution to determine which files to collect.</p>
+              <p><b>Custom logic :</b> This takes advantage of a plug-in to create download manifests.</p>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="Static_Download">
+            <header>Static Download</header>
+            <article>
+              <p>Before it runs an action, the BigFix Client parses it, looking for download or prefetch commands.</p>
+              <p>Static downloads include the URL, the SHA hash algorithm, and the size for each item as literal values in the action script. The literal values allows an operator to see exactly what the action script is going to do. These literals are used to construct a numbered list of downloads associated with the action that is then stored on the BigFix Server. This stage of action processing is called <b>prefetch processing</b>. To easily create prefetch commands, you can use the utility: <a href="https://github.com/bigfix/make-prefetch" target="_blank">make-prefetch</a></p>
+              <p>As a consequence of prefetch processing, the Client notifies the nearest Relay of the need for downloads by requesting a URL ending in &lt;actionid&gt;/0, which in turn triggers the Relay to download all the items corresponding to that specified action. When they are ready, the Relay pings the clients back with the action ID. All the BigFix Clients running that action will then collect the files by asking for them one at a time as &lt;actionid&gt;/1, &lt;actionid&gt;/2, and so on.</p>
+              <p>However, because the download information is represented by literal expressions, only those URLs already known when the action is authored can be represented. This means that static downloads cannot be used for those instances where the downloads change, but the action script remains the same.</p>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="Dynamic_Download">
+            <header>Dynamic Download</header>
+            <article>
+              <p>Dynamic downloads add the ability to use relevance clauses to specify downloads. These new commands must be embedded in a special segment of action code called a <a href="#The_Prefetch_Block_Structure">prefetch block</a>. The prefetch block structure ensures that the file is successfully downloaded before the action script runs.</p>
+              <p><b>Note:</b> Only one prefetch block is allowed per action.</p>
+              <p>The following examples show how to use the <b>prefetch block</b> to run dynamic downloads.</p>
+              <hr id="small-hr">
+              <p>In this example, a file named <code>download.spec</code>, containing a named variable in its first line, is created in the AV Fixlet site:</p>
+              <code>name=update.exe sha1=123 sha256=678 size=456 url=http://site.com/download/patch.exe</code>
+              <p>You can access the patch referenced in the download.spec file by using the relevance substitution in the prefetch block of the action script:</p>
+              <pre>
+                <code>
+          <span class="action">begin prefetch block</span>  
+              <span class="comment">// Creates a variable named downloadFile that points to a file in the AV site.</span>      
+              <span class="action">parameter</span> "downloadFile"="{pathname <span class="relevance">of</span> file <span class="pathname">"download.spec"</span> <span class="relevance">of</span> client folder <span class="relevance">of</span> site <span class="pathname">"AV"</span>}"       
+
+              <span class="comment">// Adds this file to the prefetch queue for subsequent downloading.</span>        
+              <span class="action">add prefetch item</span> {line 1 <span class="relevance">of</span> file (parameter <span class="pathname">"downloadFile"</span>)}
+          <span class="action">end prefetch block</span>
+                </code>
+              </pre>
+              <p>In this way, a Fixlet message in the AV site could offer to keep something automatically updated and the download.spec file would be refreshed whenever a new version becomes available.</p>
+              <hr id="small-hr">
+              <p>Another popular technique is to use a data file, or manifest, containing a list of multiple downloads, each with its own URL, SHA hash algorithm, and size. This is useful when the files to download change often, as in updated spy ware or anti-virus definitions. This is an example of a manifest file:</p>
+              <pre>
+                <code>
+          name=patch1.exe sha1=123 sha256=347 size=456 url=http://site.com/download/patch1.exe
+          name=patch2.exe sha1=234 sha256=358 size=567 url=http://site.com/download/patch2.exe
+          name=patch3.exe sha1=345 sha256=368 size=678 url=http://site.com/download/patch3.exe
+                </code>
+              </pre>
+              <p>You can download these patches with a prefetch block that pulls these files from the manifest, for example:</p>
+              <pre>
+                <code>
+          <span class="action">begin prefetch block</span>
+             <span class="action">parameter</span> "manifest"="{pathname <span class="relevance">of</span> file <span class="pathname">"manifest.spec"</span> <span class="relevance">of</span> client folder <span class="relevance">of</span> site <span class="pathname">"AV"</span>}"
+             <span class="action">add prefetch item</span> {concatenation " ; " <span class="relevance">of</span> lines <span class="relevance">of</span> file (parameter <span class="pathname">"manifest"</span>)}
+          <span class="action">end prefetch block</span>
+                </code>
+              </pre>
+              <hr id="small-hr">
+              <p>ou can also use the <b>execute prefetch plug-in</b> command to use small executables to process files into a fresh manifest, for example:</p>
+              <pre>
+                <code>
+          <span class="action">begin prefetch block</span>
+           <span class="comment">// Adds the plugin to the prefetch queue </span>
+           <span class="action">add prefetch item</span> name=myPlugIn.exe sha1=123 size=456 url=http://mysite/plugin.exe sha2=347
+
+           <span class="comment">// Collects the plug-in before prefetch processing continues</span>
+           <span class="action">collect prefetch items</span>
+           <span class="action">parameter</span> "ini"="{file <span class="pathname">"prepass.ini"</span> <span class="relevance">of</span> site (value <span class="relevance">of</span> setting <span class="pathname">"CustomSite"</span>) <span class="relevance">of</span> client}"
+
+           <span class="comment">// Runs the plug-in with its arguments including the path for the data 
+           // file and the manifest to be produced from it.</span>
+           <span class="action">execute prefetch plug-in</span> "{download path <span class="pathname">"myPlugIn.exe"</span>}" /downloads "{parameter <span class="pathname">"ini"</span>}" "{download path <span class="pathname">"manifest"</span>}"
+
+           <span class="comment">// Queues up the downloads specified in the freshly created manifest     </span>
+           <span class="action">add prefetch item</span> {concatenation <span class="pathname">" ; "</span> <span class="relevance">of</span> lines <span class="relevance">of</span> download file <span class="pathname">"manifest"</span>}
+        <span class="action">end prefetch block</span>
+                </code>
+              </pre>
+              <p>A technique like this might also be used to decrypt a secure file into a plain-text manifest.</p>
+              <hr id="small-hr">
+              <p>Dynamic downloads must specify files with the confirmation of a size or SHA hash algorithm. The URL, size, and SHA hash algorithm can come from a source outside of the action script. For dynamic downloading, BigFix uses a white-list of URLs to ensure that only authorized URLs can download files. This is the path to the white list:</p>
+              <code>&lt;BES Server Install Path&gt;\Mirror Server\Config\DownloadWhitelist.txt.</code>
+              <p>This file contains a newline-separated list of regular expressions using a Perl regex format, such as:</p>
+              <pre>
+                <code>
+          http://.*\.sitename\.com/.*
+          http://software\.sitename\.com/.*
+          http://download\.sitename\.com/patches/JustThisOneFile\.qfx
+                </code>
+              </pre>
+              <p>The first line is the least restrictive, allowing any file at the sitename domain to be downloaded. The second line requires a specific domain host and the third line is the most restrictive, limiting the URL to a single file named "JustThisOneFile.qfx".</p>
+              <p>An empty or non-existent white-list causes all dynamic downloads to fail. A white-list entry of ".*" (dot star) allows any URL to be downloaded.</p>
+              <hr id="small-hr">
+              <p>Prefetch blocks allow conditional statements:</p>
+              <pre>
+                <code>
+        <span class="action">begin prefetch block</span>
+           <span class="action">if</span> {name <span class="relevance">of</span> operating system = <span class="pathname">"Windows 2000"</span>}
+              <span class="action">add prefetch item</span> name=up.exe sha1=123 size=456 url=http://site.com/patch2k.exe sha2=567
+           <span class="action">else</span>
+              <span class="action">add prefetch item</span> name=up.exe sha1=123 size=456 url=http://site.com/patch.exe sha2=567
+           <span class="action">endif</span>
+        <span class="action">end prefetch block</span>
+        <span class="action">wait</span> "{download path <span class="pathname">"up.exe"</span>}"
+                </code>
+              </pre>
+              <p>This action script branches on the existence of Win2K, but the downloads in this example are described statically (as literal text). Although the clients will only download the particular items they need, all the static files are downloaded to servers and relays as soon as they are requested.</p>
+              <p>Dynamic downloads can improve this situation because only those files actually needed by clients are retrieved by to the server and relay in the first place. Here's an example using dynamic downloading:</p>
+              <pre>
+                <code>
+        <span class="action">begin prefetch block</span>
+           <span class="action">if</span> {name <span class="relevance">of</span> operating system = <span class="pathname">"Windows 2000"</span>}
+              <span class="action">add prefetch item</span> {<span class="pathname">"name=up.exe sha1=123 size=456 url=http://site.com/patch2k.exe"</span>} sha2=567
+           <span class="action">else</span>
+              <span class="action">add prefetch item</span> {<span class="pathname">"name=up.exe sha1=123 size=456 url=http://site.com/patch.exe"</span>} sha2=567
+           <span class="action">endif</span>
+        <span class="action">end prefetch block</span>
+        <span class="action">wait</span> "{download path <span class="pathname">"up.exe"</span>}"
+                </code>
+              </pre>
+              <p>By using relevance substitution in the prefetch block, with a properly configured white-list file on the server, this code only fetches the necessary file, potentially improving bandwidth requirements and efficiency.</p>
+              <hr id="small-hr">
+              <p>You can also branch execution based on the contents of a file, allowing you to automate updates. This can be especially useful for dealing with changing version numbers. For example, you could create a file named 'manifest.txt' containing two named variables, such as:</p>
+              <pre>
+                <code>
+          version=1234
+          <span class="action">download</span>=name=update.exe sha1=123 size=456
+          url=http://site.com/download/patch.exe sha2=567
+                </code>
+              </pre>
+              <p>Note that the download variable contains the name, sha1, sha2, size and URL of the patch file.</p>
+              <p>You can then use relevance substitution to extract these variables with an expression, such as:</p>
+              <pre>
+                <code>
+          <span class="action">parameter</span> "ver"="{key <span class="pathname">"version"</span> <span class="relevance">of</span> file <span class="pathname">"{download path "</span>manifest.txt"}"}"
+          <span class="action">parameter</span> "filename"={key <span class="pathname">"download"</span> <span class="relevance">of</span> file <span class="pathname">"{download path "</span>manifest.txt"}"}
+                </code>
+              </pre>
+              <p>By comparing the extracted version against some stored values, you can determine if and when you need to download the specified file. This technique can be expanded to include multiple versions and can even be used to distinguish between patches and full replacement updates.</p>
+              <hr id="small-hr">
+              <p>No matter which technique is used, after the files have been downloaded, they can be examined with various Inspectors. Before the action runs, these files are collected in a prefetch folder. While the action is running, they are located in the __Download folder.</p>
+              <p>These Inspectors can be used to locate the files before or while the action runs:</p>
+                <ul>
+                  <li><b>download folder:</b> During the prefetch parsing, this Inspector returns a folder object from the <code>__Global\&lt;sitename&gt;\&lt;actionid&gt;\named folder</code>.</li>
+                  <li><b>download path "pathname":</b> This Inspector returns a string containing the full pathname to the specified file, whether it exists or not. The download filename is equivalent to <code>(pathname of download folder) &amp; &lt;pathseparator&gt; &amp; filename</code>.</li>
+                  <li><b>download file "filename":</b> This Inspector returns a file object from the download folder or another named folder. The download filename is equivalent to <code>file 'filename' of download folder</code>.</li>
+                </ul>
+              <hr id="small-hr">
+              <p>The action script author must protect users from these actions and ensure that downloads and their checksums are not been compromised. An end-to-end authentication mechanism resistant to man-in-the-middle attacks is the best defense. When authoring a dynamic download action, it is critical to craft the action so that it authenticates information before using it, typically by using a plug-in as described above. It is also a good practice to explicitly identify those steps in the action script that perform this authentication so that users of your action can audit the mechanism before deciding to trust it.</p>
+            </article>
+          </section>
+          <hr>
+          <section class="main-section" id="Action_Status_Messages">
+            <header>Action Status Messages</header>
+            <article>
+              <p>Actions might report the following statuses back to the BigFix Server while processing on the client:</p>
+              <p><b>Not Reported</b><br>
+        No report on this action yet. No report has yet been received from the endpoint for the action taken. We cannot confirm if the action has been propagated, mirrored, gathered, processed, or reported until this status changes to something else.</p>
+              <p><b>Fixed</b><br>
+        The action executed successfully. The BigFix Client has run the action and the relevance is now false (meaning that the action ran and fixed the issue).</p>
+              <p><b>Running</b><br>
+        The action is currently running.</p>
+              <p><b>Evaluating</b><br>
+        Evaluating relevance and action constraints. The BigFix Client has received the action targeted at it and will evaluate the action to see if it is time to run, the issue is still relevant, and so on.</p>
+              <p><b>Completed</b><br>
+        The action has completed and no other actions are required.</p>
+              <p><b>Failed</b><br>
+        The action failed. The BigFix Client has run the action and the issue is still relevant (even if the action ran successfully). Note that in the cases of patches, 'Failed' usually means the patch file was run, but failed to actually patch the computer.</p>
+              <p><b>Canceled</b><br>
+        The action was canceled by the user. The user clicked the "cancel" button when prompted with a message box.</p>
+              <p><b>Download Failed</b><br>
+        A required download failed.</p>
+              <p><b>Locked</b><br>
+        This computer is locked. The BigFix Client is in the "Locked" state that prevents it from running actions until unlocked</p>
+              <p><b>Waiting</b><br>
+        The BigFix Client is waiting for some condition to be able to run the action. The waiting conditions include: waiting for user input, waiting to retry after failure, waiting for a time/date range, waiting for a distribution time, waiting for a user to log in, and waiting until the custom constraints property becomes relevant.</p>
+                <ul>
+                  <li>Action has failed and is waiting before trying again.</li>
+                  <li>Waiting on action dependency.</li>
+                  <li>Waiting to run in specified time range.</li>
+                  <li>Waiting until the action start time.</li>
+                  <li>This computer is not licensed.</li>
+                  <li>Waiting to satisfy temporal distribution time constraint.</li>
+                  <li>Waiting for active user condition.</li>
+                </ul>
+              <p><b>Pending Downloads</b><br>
+        Waiting for downloads to be mirrored. The BigFix Client is waiting to receive the complete file. This state will persist until the download is available on the BigFix Server -> BigFix Relay -> BigFix Client.</p>
+              <p><b>Pending Restart</b><br>
+        Waiting for restart to complete action. The action was completed, but the action status of 'Fixed' or 'Failed' cannot be assessed until the computer is restarted.</p>
+              <p><b>Pending Message</b><br>
+        Waiting for user to respond to message.</p>
+              <p><b>Pending Login</b><br>
+        Waiting for user to log in.</p>
+              <p><b>Constrained</b><br>
+        The computer doesn't meet the specified retrieved property constraint.</p>
+              <p><b>Postponed</b><br>
+        The user postponed execution of this action.</p>
+              <p><b>Invalid Signature</b><br>
+        The client was unable to verify the signature on this action.</p>
+              <p><b>Not Relevant</b><br>
+        The Fixlet that this action addresses is not relevant on this machine. Before running the action, the BigFix Client checked the relevance for the action and it is no longer true.</p>
+              <p><b>Pending Offer Acceptance</b><br>
+        Waiting for user to accept this offer.</p>
+              <p><b>Offers Disabled</b><br>
+        No user is able to accept this offer.</p>
+              <p><b>Disk Limited</b><br>
+        The download size exceeds the maximum value set in the client setting _BESClient_Download_PreCacheStageDiskLimitMB, which can be modified through the Edit Computer Settings dialog.</p>
+              <p><b>Disk Free Limited</b><br>
+        The remaining disk space is smaller than the value set in the client setting _BESClient_Download_MinimumDiskFreeMB. For the download to complete, space must be cleared on the endpoint, or the client setting must be changed using the Edit Computer Settings dialog.</p>
+              <p><b>Hash Mismatch</b><br>
+        The download completed, but the file failed a hash comparison. To troubleshoot, investigate the network between the agent and its parent to eliminate network problems.</p>
+              <p><b>Transcoding Error</b><br>
+        The action failed transcoding from the deployment codepage.</p>
+              <p><b>Pending Client Restart</b><br>
+        Waiting for client restart to complete action.</p>
+                <b><i>error</i></b><br>
+                <ul>
+                  <li>An unknown error occurred.</li>
+                  <li>The Fixlet context is missing or invalid.</li>
+                  <li>Invalid site context. The Fixlet site might no longer exist.</li>
+                  <li>Invalid action content: the action is empty.</li>
+                  <li>Invalid action content: the action type is invalid.</li>
+                  <li>Invalid action content: the action script contains a syntax error.</li>
+                  <li>This action contained invalid download syntax.</li>
+                  <li>The download manager encountered a configuration error.</li>
+                  <li>This action was not executed for unknown reasons.</li>
+                  <li>This action was run, but could not be restarted due to a client UI translation error.</li>
+                  <li>This action was not executed due to an error encountered while translating the client UI elements.</li>
+                  <li>This action was not executed due to an error showing the client UI.</li>
+                  <li>This action failed to complete because the Management Extender plug-in reported an error.</li>
+                  <li>This action was not executed because the operator who created it is not an administrator of this client.</li>
+                </ul>
+              <p><b>Note:</b> After an action expires, the action status is no longer updated.</p>
+            </article>
+          </section>
+        </main>
+    </body>
+</html>
